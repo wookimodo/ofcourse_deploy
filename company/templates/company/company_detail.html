@@ -1,0 +1,211 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ofcourse</title>
+    <!-- fontawesome css cdn-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+        integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- normalize css cdn-->
+    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+    <!-- global css -->
+    <link rel="stylesheet" href="{%static 'css/style.css'%}">
+</head>
+
+<body class="list-page">
+    <header>
+        {% include 'partials/navbar.html' %}
+    </header>
+    <div class="view content col-2">
+        <aside>
+            <div class="skill-info-area">
+                <div class="skill-icon">
+                    <!-- 회사 이름, 로고 -->
+                    <img src="{{ company.logo }}" alt="skill icon">
+                </div>
+                <h3>{{ company.name }}</h3>
+                <br>
+                <p class="skill-category">{{ company.stack_info}}</p>
+                {% if company.category %}
+                <br>
+                <p class="skill-category">{{ company.category}}</p>
+                {% endif %}
+                <ul class="skill-info">
+                    {% if company.company_link %}
+                    <li>
+                        <a href="{{ company.company_link }}" target="_blank">웹 사이트</a>
+                    </li>
+                    {% else %}
+                    <li>
+                        <a href="#">웹 사이트</a>
+                    </li>
+                    {% endif %}
+
+                    {% if company.company_recruit_link %}
+                    <li>
+                        <a href="{{ company.company_recruit_link }}" target="_blank">채용 페이지</a>
+                    </li>
+                    {% else %}
+                    <li>
+                        <a href="#">채용 페이지</a>
+                    </li>
+                    {% endif %}
+                    
+                </ul>
+            </div>
+        </aside>
+        <!-- 스택 카테고리별 리스트 -->
+        <main class="view-area">
+            <div class="info-box">
+                <h3 class="skill-title">언어</h3>
+                <ul class="skill-list">
+                    {% for s in company.stack.iterator %}
+                    {% if s.assort == "언어" %}
+                    <li>
+                        <a href="/stack/{{ s.id }}">
+                            <i class="skill-icon"><img src="{{ s.logo }}" alt="스킬 아이콘"></i>
+                            <p class="skill-name">{{ s.name }}</p>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="info-box">
+                <h3 class="skill-title">프론트엔드</h3>
+                <ul class="skill-list">
+                    {% for s in company.stack.iterator %}
+                    {% if s.assort == "프론트엔드" %}
+                    <li>
+                        <a href="/stack/{{ s.id }}">
+                            <i class="skill-icon"><img src="{{ s.logo }}" alt="스킬 아이콘"></i>
+                            <p class="skill-name">{{ s.name }}</p>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="info-box">
+                <h3 class="skill-title">백엔드</h3>
+                <ul class="skill-list">
+                    {% for s in company.stack.iterator %}
+                    {% if s.assort == "백엔드" %}
+                    <li>
+                        <a href="/stack/{{ s.id }}">
+                            <i class="skill-icon"><img src="{{ s.logo }}" alt="스킬 아이콘"></i>
+                            <p class="skill-name">{{ s.name }}</p>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="info-box">
+                <h3 class="skill-title">모바일</h3>
+                <ul class="skill-list">
+                    {% for s in company.stack.iterator %}
+                    {% if s.assort == "모바일" %}
+                    <li>
+                        <a href="/stack/{{ s.id }}">
+                            <i class="skill-icon"><img src="{{ s.logo }}" alt="스킬 아이콘"></i>
+                            <p class="skill-name">{{ s.name }}</p>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="info-box">
+                <h3 class="skill-title">데브옵스</h3>
+                <ul class="skill-list">
+                    {% for s in company.stack.iterator %}
+                    {% if s.assort == "데브옵스" %}
+                    <li>
+                        <a href="/stack/{{ s.id }}">
+                            <i class="skill-icon"><img src="{{ s.logo }}" alt="스킬 아이콘"></i>
+                            <p class="skill-name">{{ s.name }}</p>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="info-box">
+                <h3 class="skill-title">데이터베이스</h3>
+                <ul class="skill-list">
+                    {% for s in company.stack.iterator %}
+                    {% if s.assort == "데이터베이스" %}
+                    <li>
+                        <a href="/stack/{{ s.id }}">
+                            <i class="skill-icon"><img src="{{ s.logo }}" alt="스킬 아이콘"></i>
+                            <p class="skill-name">{{ s.name }}</p>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h3 class="skill-title">데이터</h3>
+                <ul class="skill-list">
+                    {% for s in company.stack.iterator %}
+                    {% if s.assort == "데이터" %}
+                    <li>
+                        <a href="/stack/{{ s.id }}">
+                            <i class="skill-icon"><img src="{{ s.logo }}" alt="스킬 아이콘"></i>
+                            <p class="skill-name">{{ s.name }}</p>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <h3 class="skill-title">테스팅툴</h3>
+                <ul class="skill-list">
+                    {% for s in company.stack.iterator %}
+                    {% if s.assort == "테스팅툴" %}
+                    <li>
+                        <a href="/stack/{{ s.id }}">
+                            <i class="skill-icon"><img src="{{ s.logo }}" alt="스킬 아이콘"></i>
+                            <p class="skill-name">{{ s.name }}</p>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="info-box">
+                <h3 class="skill-title">협업툴</h3>
+                <ul class="skill-list">
+                    {% for s in company.stack.iterator %}
+                    {% if s.assort == "협업툴" %}
+                    <li>
+                        <a href="/stack/{{ s.id }}">
+                            <i class="skill-icon"><img src="{{ s.logo }}" alt="스킬 아이콘"></i>
+                            <p class="skill-name">{{ s.name }}</p>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </main>
+    </div>
+    <footer>
+        <p>
+            Copyright © 2023. Kokonenne All Rights Reserved.
+        </p>
+    </footer>
+</body>
+
+</html>

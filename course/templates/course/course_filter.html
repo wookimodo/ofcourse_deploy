@@ -1,0 +1,130 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ofcourse</title>
+    <!-- fontawesome css cdn-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+        integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- normalize css cdn-->
+    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+    <!-- global css -->
+    <link rel="stylesheet" href="{%static 'css/style.css'%}">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="{%static 'js/index.js'%}"></script>
+    <script type="text/javascript" src="{%static 'js/ready.js' %}"></script>
+</head>
+
+<body class="list-page">
+    <header>
+        {% include 'partials/navbar.html' %}
+    </header>
+    <!-- <h1>Course Search</h1> -->
+    <div class="title-area">
+        <h2 class="page-title">검색 결과</h2>
+    </div>
+    <!-- 검색 폼 -->
+    <!-- 검색 -->
+    <div class="search-area">
+        <form action="{% url 'search' %}" method="GET">
+            {% csrf_token %}
+            <div class="search-bar">
+                <input type="text" name="search" id="search-bar">
+                <button type="submit" class="search-btn">검색</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="content">
+        <div class="filter-area">
+            <div class="btn-wrap">
+                <div class="btn-l-wrap">
+                    <button class="btn" onclick="filterSelection('언어')" id="start"> 언어</button>
+                    <button class="btn" onclick="filterSelection('프론트엔드')"> 프론트엔드</button>
+                    <button class="btn" onclick="filterSelection('백엔드')"> 백엔드</button>
+                    <button class="btn" onclick="filterSelection('데이터베이스')"> 데이터베이스</button>
+                    <button class="btn" onclick="filterSelection('데브옵스')"> 데브옵스</button>
+                    <button class="btn" onclick="filterSelection('데이터')"> 데이터</button>
+                    <button class="btn" onclick="filterSelection('모바일')"> 모바일</button>
+                    <button class="btn" onclick="filterSelection('테스팅툴')"> 테스팅툴</button>
+                    <button class="btn" onclick="filterSelection('협업툴')"> 협업툴</button>
+                </div>
+            </div>
+            <form action="{% url 'filter' %}" method="get">
+                <div class="skill-info-area">
+                    <div class="container">
+                        {% for s in stack_list %}
+                        {% if s.course_stack_set.exists %}
+                        <span class="filterDiv {{s.assort}}">
+                            <i class="skill-logo" style="background-image: url('{{ s.logo }}');">
+                            </i>
+                            <input type="checkbox" class="btn-check" onclick="ready()" id="btncheck{{forloop.counter}}" autocomplete="off"
+                                name="s" , value="{{s.name}}">
+                            <label class="btn btn-outline-primary" for="btncheck{{forloop.counter}}">{{s.name}}</label>
+                        </span>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <button type="submit" class="search-btn">검색</button>
+            </form>
+        </div>
+        <main class="list-area">
+            <h3 class="search-result-area">검색하신 {% for s in stack %} <span class="text-highlight"
+                    style="margin-right: .8rem;"># {{s.name}} </span> {% endfor %} 강의 정보입니다.</h3>
+            <ul>
+                {% for c in course %}
+                <li class="list-card">
+                    <a href="{{c.url}}" target="_blank">
+                        <div class="img-box">
+                            <img src="{{ c.img_url }}" alt="강의 예시 이미지">
+                        </div>
+                    </a>
+                    <div class="info-box">
+                        <h3>
+                            <a href="{{c.url}}" target="_blank">{{c.title|truncatechars:50 }}</a>
+                        </h3>
+                        <div class="keywords">
+                            {% for s in c.stack.iterator %}
+                            <span class="point">{{s.name}}</span>
+                            {% endfor %} 
+                        </div>
+                        <p class="level">레벨 - {{ c.level }}</p>
+                        <p class="teacher">{{ c.teacher }}</p>
+                        <p class="rate">{{ c.score }}</p>
+                        {% if c.price == null %}
+                        <a href="{{c.url}}" style="text-decoration: none;"  target="_blank">
+                            <p class="price">🔗</p>
+                        </a>
+                        {% elif c.price == 0 %}
+                        <p class="price">무료</p>
+                        {% else %}
+                        <p class="price">{{ c.price|intcomma }}</p>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </main>
+    </div>
+    <footer>
+        <p>
+            Copyright © 2023. Kokonenne All Rights Reserved.
+        </p>
+    </footer>
+</body>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("start").click();
+    });
+</script>
+<script type="text/javascript" src="{%static 'js/list.js' %}"></script>
+
+</html>

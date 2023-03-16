@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ofcourse</title>
+    <!-- fontawesome css cdn-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+        integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- normalize css cdn-->
+    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+    <!-- global css -->
+    <link rel="stylesheet" href="{%static 'css/style.css'%}">
+</head>
+
+<body class="list-page">
+    <header>
+        {% include 'partials/navbar.html' %}
+    </header>
+    <div class="title-area">
+        <h2 class="page-title">기업별 스택</h2>
+        <h3>기업들이 무슨 기술 스택을 사용하는지 확인해봐~🤣</h3>
+    </div>
+    <div class="search-area">
+        <!-- 검색 폼 -->
+        <form action="{% url 'company:search' %}" method="GET">
+            {% csrf_token %}
+            <!-- 검색 -->
+            <div class="search-bar">
+                <input type="text" name="search" id="search-bar" placeholder="회사명을 입력해주세요 !">
+                <button type="submit" class="search-btn">검색</button>
+            </div>
+        </form>
+    </div>
+
+    {% if search %}
+    <!-- <h1>검색하신 <span class="point">{{ search }}</span> 관련 정보입니다.</h1> -->
+    <div class="content">
+        <h3 class="search-result-area">검색하신 <span class="text-highlight">{{search}}</span>에 대한 정보입니다.</h3>
+        <main class="list-area skill">
+            <ul>
+                <!-- search 정보 -->
+                {% for c in company %}
+                <li class="list-card">
+                    <div class="company-icon">
+                        <a href="/company/{{c.id}}">
+                            <img src="{{ c.logo }}" alt="기업 로고">
+                        </a>
+                    </div>
+                    <div class="info-box">
+                        <a href="/company/{{c.id}}" style="text-decoration: none;">
+                            <h3>{{ c.name }}</h3>
+                        </a>
+                    </div>
+                    <p class="skill-info">
+                        {{ c.stack_info }}
+                    </p>
+                    <div class="skill-list">
+                        <ul>
+                            {% for stack in c.stack.iterator %}
+                            <li><a class="skill-icon" href="/stack/{{stack.id}}"><img src="{{ stack.logo }}"
+                                        alt="아이콘"></a></li>
+                            {% endfor %}
+                            <li><a class="see-more" href="{{c.id}}">더보기</a></li>
+                        </ul>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </main>
+        {% endif %}
+    </div>
+
+
+    <footer>
+        <p>
+            Copyright © 2023. Kokonenne All Rights Reserved.
+        </p>
+    </footer>
+    <script src="{%static 'js/index.js'%}"></script>
+</body>
+
+</html>

@@ -1,0 +1,146 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ofcourse</title>
+    <!-- fontawesome css cdn-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+        integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- normalize css cdn-->
+    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+    <!-- global css -->
+    <link rel="stylesheet" href="{%static 'css/style.css'%}">
+</head>
+
+<body class="list-page">
+    <header>
+        {% include 'partials/navbar.html' %}
+    </header>
+    <div class="title-area">
+        <h2 class="page-title">기업별 기술 스택</h2>
+        <h3>기업들이 무슨 기술 스택을 사용하는지 확인해봐~ 🤣</h3>
+    </div>
+    <div class="search-area">
+        <form action="{% url 'company:search' %}" method="GET">
+            {% csrf_token %}
+            <div class="search-bar">
+                <input type="text" name="search" id="search-bar" placeholder="회사명을 입력해주세요!">
+                <button type="submit" class="search-btn">검색</button>
+            </div>
+        </form>
+    </div>
+
+
+    <!-- 검색을 했을 때 -->
+    <div class="content">
+        <div class="filter-area">
+            <div class="btn-wrap">
+                <div class="btn-r-wrap">
+                    <p class="title">필터 </p>
+                    <a class="btn" href="/company">All</a>
+                    <a class="btn" href="?filter=foreign">외국기업</a>
+                    <a class="btn" href="?filter=comprehensive">종합</a>
+                    <a class="btn" href="?filter=social">소셜/컨텐츠</a>
+                    <a class="btn" href="?filter=ecommerce">이커머스</a>
+                    <a class="btn" href="?filter=trip">여행</a>
+                    <a class="btn" href="?filter=finance">금융/보험</a>
+                    <a class="btn" href="?filter=education">교육</a>
+                    <a class="btn" href="?filter=mobility">모빌리티</a>
+                    <a class="btn" href="?filter=foodtech">푸드테크</a>
+                    <a class="btn" href="?filter=realestate">부동산/인테리어</a>
+                    <a class="btn" href="?filter=healthcare">헬스케어</a>
+                    <a class="btn" href="?filter=ai">인공지능</a>
+                    <a class="btn" href="?filter=recruitment">채용</a>
+                    <a class="btn" href="?filter=etc">기타</a>
+                </div>
+            </div>
+        </div>
+        <main class="list-area skill">
+            <ul>
+                {% for c in object_list %}
+                <li class="list-card">
+                    <div class="company-icon">
+                        <a href="{{c.id}}">
+                            <img src="{{ c.logo }}" alt="강의 예시 이미지">
+                        </a>
+                    </div>
+                    <div class="info-box">
+                        <a href="{{c.id}}" style="text-decoration: none;">
+                            <h3>{{ c.name }} {% if c.category %}<span class="sort">{{ c.category }}</span>{% endif %}</h3>
+                        </a>
+                    </div>
+                    <p class="skill-info">
+                        {{ c.stack_info}}
+                    </p>
+                    <div class="skill-list">
+                        <ul>
+                            {% for stack in c.stack.iterator %}
+                            <li><a class="skill-icon" href="/stack/{{stack.id}}"><img src="{{ stack.logo }}"
+                                        alt="아이콘"></a></li>
+                            {% endfor %}
+                            <li><a class="see-more" href="{{c.id}}">자세히보기</a></li>
+                        </ul>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </main>
+    </div>
+    {% if page != 'filter' %}
+    <ul class="pagination">
+
+        <!-- 이전 페이지 객체가 있으면 '이전' 버튼 활성화 -->
+        {% if page_obj.has_previous %}
+        <a class="btn" href="/company/?page={{ page_obj.previous_page_number }}" tabindex="-1"><i
+                class="fa-solid fa-angle-left"></i></a>
+        {% else %}
+        <!-- <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">이전</a>
+            </li> -->
+        <a class="btn disabled" tabindex="-1"><i class="fa-solid fa-angle-left"></i></a>
+        {% endif %}
+
+
+        {# 페이지를 번호로 출력하기 #}
+        {% for page in page_obj.paginator.page_range %} {# 전체 페이지수를 가져옴 #}
+        {# 현재 선택한 페이지 번호는 비활성화 시킴 #}
+        {% if page_obj.number == forloop.counter %}
+        {# 위에 page_obj 대신 page 로도 되는지 테스트해보기 #}
+        <li>
+            {# 현재 선택한 페이지 번호는 활성화 시킴 #}
+            <a class="btn on" href="{{ request.path }}?page={{ forloop.counter }}">{{ forloop.counter }}</a>
+        </li>
+        {% else %}
+        {# 비활성화 시켜주는 class, 회색처리되서 클릭되지 않게함 #}
+        <li>
+            <a class="btn" href="{{ request.path }}?page={{ forloop.counter }}">{{ forloop.counter }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <!-- 이전페이지 객체가 있으면 [Next]버튼 활성화 -->
+        <a class="btn" href="/company/?page={{ page_obj.next_page_number }}"><i class="fa-solid fa-angle-right"></i></a>
+        {% else %}
+        <li class="page-item disabled"> <!-- 여기 비활성화 안해주면 이상한데로 계속 감-->
+            <a class="btn disabled"><i class="fa-solid fa-angle-right"></i></a>
+        </li>
+        {% endif %}
+
+    </ul>
+    {% endif %}
+    <footer>
+        <p>
+            Copyright © 2023. Kokonenne All Rights Reserved.
+        </p>
+    </footer>
+    <script src="{%static 'js/index.js'%}"></script>
+</body>
+
+</html>

@@ -1,0 +1,125 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ofcourse</title>
+    <!-- fontawesome css cdn-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+        integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- normalize css cdn-->
+    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+    <!-- global css -->
+    <link rel="stylesheet" href="{%static 'css/style.css'%}">
+    <link rel="stylesheet" href="{%static 'css/filterling.css'%}">
+</head>
+
+<body class="list-page">
+    <header>
+        {% include 'partials/navbar.html' %}
+    </header>
+    <div class="title-area">
+        <h2 class="page-title">기업별 스택</h2>
+    </div>
+    <div class="search-area">
+        <form action="{% url 'company:search' %}" method="GET">
+            {% csrf_token %}
+            <div class="search-bar">
+                <input type="text" name="search" id="search-bar" placeholder="회사명을 입력해주세요!">
+                <button type="submit" class="search-btn">검색</button>
+            </div>
+        </form>
+    </div>
+
+     
+    <!-- 검색을 했을 때 -->
+    <div class="content">
+        <main class="list-area skill">
+            <ul>
+                {% for c in company_list %}
+                <li class="list-card">
+                    <div class="company-icon">
+                        <a href="{{c.id}}">
+                            <img src="{{ c.logo }}" alt="강의 예시 이미지">
+                        </a>
+                    </div>
+                    <div class="info-box">
+                        <a href="{{c.id}}" style="text-decoration: none;">
+                            <h3>{{ c.name }}</h3>
+                        </a>
+                    </div>
+                    <p class="skill-info">
+                        {{ c.stack_info }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ c.category }}
+
+                    </p>
+                    <div class="skill-list">
+                        <ul>
+                            {% for stack in c.stack.iterator %}
+                            <li><a class="skill-icon" href="/stack/{{stack.id}}"><img src="{{ stack.logo }}"
+                                        alt="아이콘"></a></li>
+                            {% endfor %}
+                            <li><a class="see-more">더보기</a></li>
+                        </ul>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </main>
+    </div>
+
+    <ul class="pagination">
+
+        <!-- 이전 페이지 객체가 있으면 '이전' 버튼 활성화 -->
+        {% if page_obj.has_previous %}
+        <a class="btn" href="/company/?page={{ page_obj.previous_page_number }}" tabindex="-1"><i
+                class="fa-solid fa-angle-left"></i></a>
+        {% else %}
+        <!-- <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">이전</a>
+            </li> -->
+        <a class="btn disabled" tabindex="-1"><i class="fa-solid fa-angle-left"></i></a>
+        {% endif %}
+
+
+        {# 페이지를 번호로 출력하기 #}
+        {% for page in page_obj.paginator.page_range %} {# 전체 페이지수를 가져옴 #}
+        {# 현재 선택한 페이지 번호는 비활성화 시킴 #}
+        {% if page_obj.number == forloop.counter %}
+        {# 위에 page_obj 대신 page 로도 되는지 테스트해보기 #}
+        <li>
+            {# 현재 선택한 페이지 번호는 활성화 시킴 #}
+            <a class="btn on" href="{{ request.path }}?page={{ forloop.counter }}">{{ forloop.counter }}</a>
+        </li>
+        {% else %}
+        {# 비활성화 시켜주는 class, 회색처리되서 클릭되지 않게함 #}
+        <li>
+            <a class="btn" href="{{ request.path }}?page={{ forloop.counter }}">{{ forloop.counter }}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <!-- 이전페이지 객체가 있으면 [Next]버튼 활성화 -->
+        <a class="btn" href="/company/?page={{ page_obj.next_page_number }}"><i class="fa-solid fa-angle-right"></i></a>
+        {% else %}
+        <li class="page-item disabled"> <!-- 여기 비활성화 안해주면 이상한데로 계속 감-->
+            <a class="btn disabled"><i class="fa-solid fa-angle-right"></i></a>
+        </li>
+        {% endif %}
+
+    </ul>
+
+    <footer>
+        <p>
+            Copyright © 2023. Kokonenne All Rights Reserved.
+        </p>
+    </footer>
+    <script src="{%static 'js/index.js'%}"></script>
+</body>
+
+</html>

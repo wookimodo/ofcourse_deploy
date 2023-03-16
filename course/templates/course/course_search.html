@@ -1,0 +1,106 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ofcourse</title>
+    <!-- fontawesome css cdn-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+        integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- normalize css cdn-->
+    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+    <!-- global css -->
+    <link rel="stylesheet" href="{%static 'css/style.css'%}">
+    <script src="{%static 'js/index.js'%}"></script>
+</head>
+
+<body class="list-page">
+    <header>
+        {% include 'partials/navbar.html' %}
+    </header>
+    <!-- <h1>Course Search</h1> -->
+    <div class="title-area">
+        <h2 class="page-title">강의 찾기</h2>
+    </div>
+    <!-- 검색 폼 -->
+    <!-- 검색 -->
+    <div class="search-area">
+        <form action="{% url 'search' %}" method="GET">
+            {% csrf_token %}
+            <div class="search-bar">
+                <input type="text" name="search" id="search-bar">
+                <button type="submit" class="search-btn">검색</button>
+            </div>
+        </form>
+    </div>
+    <!-- search 정보 -->
+    {% if search %}
+    <div class="content">
+        <h3 class="search-result-area">검색하신 <span class="text-highlight">{{search}}</span> 강의 정보입니다.</h3>
+        <main class="list-area">
+            <ul>
+                {% for c in course %}
+                <li class="list-card">
+                    <a href="{{c.url}}" target="_blank">
+                        <div class="img-box">
+                            <img src="{{ c.img_url }}" alt="강의 예시 이미지">
+                        </div>
+                    </a>
+                    <div class="info-box">
+                        <h3>
+                            <a href="{{c.url}}" target="_blank">{{c.title|truncatechars:50 }}</a>
+                        </h3>
+                        <div class="keywords">
+                            {% for s in c.stack.iterator %}
+                            <span class="point">{{s.name}}</span>
+                            {% endfor %}
+                        </div>
+                        <p class="level">레벨 - {{ c.level }}</p>
+                        <p class="teacher">{{ c.teacher }}</p>
+                        <p class="rate">{{ c.score }}</p>
+                        {% if c.price == null %}
+                        <p class="price">🔗</p>
+                        {% elif c.price == 0 %}
+                        <p class="price">무료</p>
+                        {% else %}
+                        <p class="price">{{ c.price|intcomma }}</p>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endfor %}
+                {% else %}
+                <h1>찾고 있는 강의를 검색창에 입력해주세요.</h1>
+                {% endif %}
+            </ul>
+
+            <div class="pagination">
+                {% if course.has_previous %}
+                <a href="?page=1&search={{search}}" class="btn"><i class="fa-solid fa-angle-left"></i>First</a>
+                <a href="?page={{course.previous_page_number}}&search={{search}}" class="btn"><i
+                        class="fa-solid fa-angles-left"></i>Previous</a>
+                {% endif %}
+
+                <span>{{course.number}} / {{course.paginator.num_pages}}</span>
+
+                {% if course.has_next %}
+                <a href="?page={{course.next_page_number}}&search={{search}}" class="btn"><i
+                        class="fa-solid fa-angle-right"></i>Next</a>
+                <a href="?page={{course.paginator.num_pages}}&search={{search}}" class="btn"><i
+                        class="fa-solid fa-angles-right"></i>Last</a>
+                {% endif %}
+            </div>
+        </main>
+    </div>
+    <footer>
+        <p>
+            Copyright © 2023. Kokonenne All Rights Reserved.
+        </p>
+    </footer>
+</body>
+
+</html>

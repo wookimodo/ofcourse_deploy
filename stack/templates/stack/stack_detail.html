@@ -1,0 +1,90 @@
+{% load static %}
+{% load humanize %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ofcourse</title>
+    <!-- fontawesome css cdn-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+        integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- normalize css cdn-->
+    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+    <!-- global css -->
+    <link rel="stylesheet" href="{%static 'css/style.css'%}">
+</head>
+
+<body class="list-page">
+    <header>
+        {% include 'partials/navbar.html' %}
+    </header>
+    <div class="view content col-2">
+        <aside>
+            <div class="skill-info-area">
+                <div class="skill-icon">
+                    <!-- 스택 이름, 로고 -->
+                    <img src="{{ stack.logo }}" alt="skill icon">
+                </div>
+                <h3>{{ stack.name }}</h3>
+                <br>
+                <p class="skill-category">{{stack.assort}}</p>
+                <p class="skill-info">{{ stack.described}}</p>
+            </div>
+        </aside>
+        <!-- 강의 목록 -->
+        <main class="view-area list-area">
+            <div class="info-box">
+                <h3 class="skill-title"> 연관 강의 BEST5 </h3>
+                <ul class="course-list">
+                    {% for cor in course %}
+                    <li class="list-card">
+                        <div class="img-box">
+                            <a href="{{cor.course.url}}" target="_blank">
+                                <img src="{{cor.course.img_url}}" alt="강의 예시 이미지">
+                            </a>
+                        </div>
+                        <div class="info-box">
+                            <h3><a href="{{cor.course.url}}">{{cor.course.title}}</a></h3>
+                            <p class="teacher">{{cor.course.teacher}}</p>
+                            <p class="rate">{{cor.course.score}}</p>
+                            {% if cor.course.price == null %}
+                            <p class="price">🔗</p>
+                            {% elif cor.course.price == 0 %}
+                            <p class="price">무료</p>
+                            {% else %}
+                            <p class="price">{{ cor.course.price|intcomma }}</p>
+                            {% endif %}
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <!-- 기업 목록 -->
+            </div>
+            <div class="info-box">
+                <h3 class="skill-title">사용중인 기업</h3>
+                <ul class="skill-list">
+                    {% for com in stack.company_set.iterator %}
+                    <li>
+                        <a href="/company/{{com.id}}">
+                            <i class="skill-icon"><img src="{{ com.logo }}" alt="스킬 아이콘"></i>
+                            <p class="skill-name">{{ com.name }}</p>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </main>
+    </div>
+    <footer>
+        <p>
+            Copyright © 2023. Kokonenne All Rights Reserved.
+        </p>
+    </footer>
+</body>
+
+</html>
