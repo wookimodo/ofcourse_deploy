@@ -56,32 +56,37 @@ def more_main_page():
 # more_main_page()
 def run():
 
+  driver.get(f"http://www.statiz.co.kr/stat.php")
+  lst = driver.find_elements(By.CSS_SELECTOR,'div')
+  for i in lst:
+    print(i.text)
 
-    page = 8
+
+    # page = 8
 
 
-    reviewDict = {}
-    driver.get(f"https://www.inflearn.com/courses/it-programming?order=seq&page={page}")
-    for i in range(1,25):
-      review_list = []
-      driver.find_element(
-        By.CSS_SELECTOR,
-        f"#courses_section > div > div > div > main > div.courses_container > div > div:nth-child({i}) > div > a"
-        ).send_keys(Keys.ENTER)
+    # reviewDict = {}
+    # driver.get(f"http://www.statiz.co.kr/stat.php")
+    # for i in range(1,25):
+    #   review_list = []
+    #   driver.find_element(
+    #     By.CSS_SELECTOR,
+    #     f"#courses_section > div > div > div > main > div.courses_container > div > div:nth-child({i}) > div > a"
+    #     ).send_keys(Keys.ENTER)
 
-      more_main_page()
-      title = driver.find_element(By.CSS_SELECTOR,'h1.cd-header__title').text.rstrip('\n대시보드')
-      items = driver.find_elements(By.CSS_SELECTOR,'div.review-el__body')
-      for item in items[:300]:
-          try:
-              review_list.append(item.text.strip())
-          except Exception as e:
-              continue
-      print('title : ', title)
-      print('---------------------------------------------------')
-      print('review : ', review_list)
-      print('---------------------------------------------------')
-      reviewDict[title] = {'review' : review_list}
-      driver.back()
+    #   # more_main_page()
+    #   title = driver.find_element(By.CSS_SELECTOR,'h1.cd-header__title').text.rstrip('\n대시보드')
+    #   items = driver.find_elements(By.CSS_SELECTOR,'div.review-el__body')
+    #   for item in items[:300]:
+    #       try:
+    #           review_list.append(item.text.strip())
+    #       except Exception as e:
+    #           continue
+    #   print('title : ', title)
+    #   print('---------------------------------------------------')
+    #   print('review : ', review_list)
+    #   print('---------------------------------------------------')
+    #   reviewDict[title] = {'review' : review_list}
+    #   driver.back()
     
-    toJson(reviewDict,f'reviewData{page}')
+    # toJson(reviewDict,f'reviewData{page}')
